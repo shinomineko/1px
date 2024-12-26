@@ -14,14 +14,14 @@ import (
 
 type PageData struct {
 	Color        string
-	Transparency int
+	Alpha        int
 	ImagePreview template.HTML
 	Base64Data   string
 }
 
 var templates = template.Must(template.ParseFiles("index.tmpl"))
 
-func generateColorImage(hexColor string, transparency int) (string, string, error) {
+func generateColorImage(hexColor string, alpha int) (string, string, error) {
 	previewImg := image.NewRGBA(image.Rect(0, 0, 400, 240))
 
 	// the checker pattern
@@ -39,7 +39,7 @@ func generateColorImage(hexColor string, transparency int) (string, string, erro
 
 	var r, g, b uint8
 	fmt.Sscanf(hexColor[1:], "%02x%02x%02x", &r, &g, &b)
-	overlayColor := color.RGBA{r, g, b, uint8(transparency)}
+	overlayColor := color.RGBA{r, g, b, uint8(alpha)}
 
 	img := image.NewRGBA(image.Rect(0, 0, 1, 1))
 
@@ -81,14 +81,14 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 		color = "#000000"
 	}
 
-	transparency := 255
-	if t := r.URL.Query().Get("transparency"); t != "" {
+	alpha := 255
+	if t := r.URL.Query().Get("alpha"); t != "" {
 		if val, err := strconv.Atoi(t); err == nil {
-			transparency = val
+			alpha = val
 		}
 	}
 
-	previewData, base64Data, err := generateColorImage(color, transparency)
+	previewData, base64Data, err := generateColorImage(color, alpha)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -96,7 +96,7 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 
 	data := PageData{
 		Color:        color,
-		Transparency: transparency,
+		Alpha:        alpha,
 		ImagePreview: template.HTML(fmt.Sprintf("<img src=\"%s\">", previewData)),
 		Base64Data:   base64Data,
 	}
