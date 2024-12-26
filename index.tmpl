@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>1px generator</title>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #1a1a1a;
+                color: white;
+            }
+        }
+        @media (prefers-color-scheme: light) {
+            body {
+                background: white;
+                color: black;
+            }
+        }
+        body {
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            max-width: 400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .preview {
+            margin-top: 20px;
+            width: 400px;
+        }
+        .preview img {
+            width: 400px;
+            height: 240px;
+        }
+        textarea {
+            width: 400px !important;
+            height: 100px;
+            background: inherit;
+            color: inherit;
+            border: 1px solid currentColor;
+        }
+    </style>
+</head>
+<body>
+    <form method="GET">
+        <input type="color" id="color" name="color" value="{{.Color}}">
+
+        <label for="transparency">transparency (0-255):</label>
+        <input type="number" id="transparency" name="transparency"
+               min="0" max="255" value="{{.Transparency}}">
+
+        <input type="submit" value="generate">
+    </form>
+
+    <div class="preview">
+        {{.ImagePreview}}
+    </div>
+
+    <div style="margin-top: 20px;">
+        <label for="base64">base64-encoded png:</label><br>
+        <textarea id="base64" rows="4" style="width: 100%; margin-top: 5px;" readonly>{{.Base64Data}}</textarea>
+    </div>
+</body>
+</html>
