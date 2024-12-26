@@ -58,5 +58,16 @@
         <label for="base64">base64-encoded png:</label><br>
         <textarea id="base64" rows="4" style="width: 100%; margin-top: 5px;" readonly>{{.Base64Data}}</textarea>
     </div>
+
+    <button type="button" onclick="downloadImage()">download</button>
+    <script>
+    function downloadImage() {
+        const base64Data = {{.Base64Data}};
+        const link = document.createElement('a');
+        link.href = base64Data;
+        link.download = 'color.png';
+        link.click();
+    }
+    </script>
 </body>
 </html>
