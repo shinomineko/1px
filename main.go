@@ -8,6 +8,7 @@ import (
 	"image"
 	"image/color"
 	"image/png"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -106,6 +107,6 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	http.HandleFunc("/", handleRequest)
-	fmt.Println("Server starting on port 3939")
+	log.Println("Server starting on port 3939")
 	http.ListenAndServe(":3939", nil)
 }
