@@ -39,7 +39,9 @@ func generateColorImage(hexColor string, alpha int) (string, string, error) {
 	}
 
 	var r, g, b uint8
-	fmt.Sscanf(hexColor[1:], "%02x%02x%02x", &r, &g, &b)
+	if _, err := fmt.Sscanf(hexColor[1:], "%02x%02x%02x", &r, &g, &b); err != nil {
+		return "", "", fmt.Errorf("failed to parse color values: %v", err)
+	}
 	overlayColor := color.RGBA{r, g, b, uint8(alpha)}
 
 	img := image.NewRGBA(image.Rect(0, 0, 1, 1))
@@ -102,11 +104,17 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 		Base64Data:   base64Data,
 	}
 
-	templates.ExecuteTemplate(w, "index.tmpl", data)
+	if err := templates.ExecuteTemplate(w, "index.tmpl", data); err != nil {
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 func main() {
 	http.HandleFunc("/", handleRequest)
 	log.Println("Server starting on port 3939")
-	http.ListenAndServe(":3939", nil)
+	if err := http.ListenAndServe(":3939", nil); err != nil {
+		log.Fatal(err)
+	}
 }
